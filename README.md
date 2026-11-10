@@ -22,6 +22,54 @@ The system provides an intuitive and modern interface for:
 The project demonstrates how traditional Java Swing applications can be redesigned into visually appealing and modular healthcare systems suitable for real-world environments.
 
 ---
+## What's new in v3.0
+
+A redesign in the style of iOS 27 / macOS 27 (Liquid Glass), plus a rebuilt access-control layer.
+
+<p align="center">
+  <img width="90%" src="docs/screenshots/dashboard-admin.png" alt="Today dashboard, administrator" />
+</p>
+<p align="center">
+  <img width="45%" src="docs/screenshots/login.png" alt="Sign in" />
+  <img width="45%" src="docs/screenshots/dashboard-pharmacist.png" alt="Today dashboard, pharmacist" />
+</p>
+
+**Design**
+
+* A floating glass sidebar and toolbar. Glass is used only for navigation and controls; content stays on solid cards, so it stays readable.
+* Real vector icons (the bundled Tabler icon font) replace emoji, so they look the same on Windows, macOS and Linux.
+* The Inter font, Apple system colours, large page titles, and status pills that use the same colours everywhere.
+* Capsule toasts replace information popups. Dialogs are kept for confirmations only.
+* A new role-aware **Today** dashboard. Stats, cards and quick actions depend on what the signed-in role can do.
+* Keyboard shortcuts: `Ctrl+K` (`Cmd+K` on macOS) jumps to a screen, and `Ctrl+1`–`Ctrl+9` open sidebar items.
+
+**Access control**
+
+* One source of truth: `security/AccessPolicy`. Access is denied unless granted, and each screen is `NONE`, `VIEW` or `FULL` per role. The sidebar, navigation guard and dashboard all read from it.
+* Users only see the screens they can open. A screen a role can't open is never built.
+* Passwords are hashed with PBKDF2-HMAC-SHA256 (210,000 iterations, salted, constant-time check), and password buffers are wiped after use.
+* An account locks for 60 seconds after 5 failed sign-ins. Error messages never say whether the username or the password was wrong.
+* Users are signed out automatically after 15 minutes without activity.
+* Sign-ins, failures, lockouts, sign-outs and denied access are written to an audit log (`security/AuditLog`).
+
+| Screen | Admin | Doctor | Nurse | Pharmacist |
+| --- | --- | --- | --- | --- |
+| Today | Full | Full | Full | Full |
+| Patients | Full | Full | Full | View |
+| Appointments | Full | Full | Full | – |
+| Vitals | Full | Full | Full | – |
+| Beds | Full | View | Full | – |
+| Doctors | Full | View | View | – |
+| Pharmacy | Full | View | View | Full |
+| Billing | Full | – | – | – |
+| Messages | Full | Full | Full | Full |
+| Settings | Full | – | – | – |
+
+Demo accounts: `admin / 1234`, `doctor1 / 3333`, `nurse1 / 2222`, `pharm1 / 4444`.
+
+**Still to do:** the Patients, Appointments, Vitals, Beds, Doctors, Pharmacy, Billing, Messages and Settings screens run inside the new shell but keep their old styling. They get redesigned in phase 2.
+
+---
 ##  Screenshots
 
 <p align="center">
@@ -322,26 +370,30 @@ Modular structure allows easy future expansion.
 
 ##  Installation
 
-### Clone the Repository
+Requires **Java 17+** and **Maven 3.9+**.
 
 ```bash
-git clone https://github.com/JerryKaz/upsa-clinic-management-system.git
+git clone https://github.com/JerryKaz/Clinic-demo.git
+cd Clinic-demo
+
+mvn exec:java                         # run from source
+mvn package                           # run the tests and build a single runnable jar
+java -jar target/clinic-3.0.0.jar
 ```
 
-### Open Project
-## NOTE: have Java install on your PC
-Open the project in:
+In IntelliJ IDEA, NetBeans or Eclipse, open the folder as a **Maven project** and run `upsa.clinic.Main`.
 
-* IntelliJ IDEA
-* NetBeans
-* Eclipse
+### Project layout
 
-### Run the Application
-
-Run:
-
-```bash
-MainApp.java
+```
+src/main/java/upsa/clinic/
+  Main.java          entry point
+  security/          Role, Screen, AccessLevel, AccessPolicy, AuthService, PasswordHasher, AuditLog
+  shell/             MainWindow, LoginWindow, Sidebar, Toolbar, IdleLock
+  ui/                Theme tokens and components (GlassPanel, Card, PillButton, Toast, Icons, ...)
+  data/              ClinicData (sample data; swap for a database later)
+  panels/            DashboardPanel (new) and the existing feature screens
+src/main/resources/upsa/clinic/fonts/   Tabler icon font (MIT)
 ```
 
 ---
