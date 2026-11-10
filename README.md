@@ -1,11 +1,11 @@
-# Ayaresa — Clinic OS
+# MediPulse — Clinic OS
 
-*Ayaresa* is Twi for "healing". It is a desktop clinic management system written in Java 17 and Swing, with an interface in the style of iOS 27 / macOS 27 (Liquid Glass). It is built for small clinics in Ghana: Ghana cedis, NHIS claims, Mobile Money and Ghana Card numbers are all supported.
+**MediPulse** is a desktop clinic management system written in Java 17 and Swing, with an interface in the style of iOS 27 / macOS 27 (Liquid Glass). It is built for small clinics in Ghana: Ghana cedis, NHIS claims, Mobile Money and Ghana Card numbers are all supported.
 
 Version 4.0 is a full rebuild of the earlier **UPSA Clinic (v2.0)** Java Swing project. This README shows the old and new designs side by side, compares what each version can do, and lists everything that was added.
 
 <p align="center">
-  <img width="92%" src="docs/screenshots/new/dashboard.png" alt="Ayaresa Today dashboard" />
+  <img width="92%" src="docs/screenshots/new/dashboard.png" alt="MediPulse Today dashboard" />
 </p>
 
 ---
@@ -27,7 +27,7 @@ Version 4.0 is a full rebuild of the earlier **UPSA Clinic (v2.0)** Java Swing p
 
 The old screenshots were taken by running the original v2.0 code from this repository's first commit. The new screenshots come from the current version. Both use the same window size.
 
-| Screen | Old (UPSA Clinic v2.0) | New (Ayaresa v4.0) |
+| Screen | Old (UPSA Clinic v2.0) | New (MediPulse v4.0) |
 | --- | --- | --- |
 | Sign in | <img src="docs/screenshots/old/login.png" width="300" /> | <img src="docs/screenshots/new/login.png" width="300" /> |
 | Dashboard | <img src="docs/screenshots/old/dashboard.png" width="420" /> | <img src="docs/screenshots/new/dashboard.png" width="420" /> |
@@ -77,7 +77,7 @@ The old screenshots were taken by running the original v2.0 code from this repos
 
 ## 2. What the old system gives vs what the new system gives
 
-| Area | Old system (UPSA Clinic v2.0) | New system (Ayaresa v4.0) |
+| Area | Old system (UPSA Clinic v2.0) | New system (MediPulse v4.0) |
 | --- | --- | --- |
 | **Data** | Hard-coded sample rows in each screen. Screens didn't share data. Everything was lost on close | One shared data store. All screens read the same records and update live. Saved to disk between runs |
 | **Dashboard** | Static, made-up statistics and charts | Live statistics for each role: patients in the clinic and average wait, visits today, NEWS2 alerts, bed occupancy, stock alerts, money collected, appointments. Plus a 14-day visit trend, a "Needs attention" list, upcoming appointments and quick actions |
@@ -144,7 +144,7 @@ The old screenshots were taken by running the original v2.0 code from this repos
 - **Dashboards for each role**: an admin, doctor, nurse, pharmacist and receptionist each see a different Today screen.
 - **Team messages** by channel.
 - **CSV export** of patients, safe to open in Excel (formula injection blocked).
-- **Data saved between runs** (`~/.ayaresa/clinic.dat`), written so that a crash never leaves a half-written file.
+- **Data saved between runs** (`~/.medipulse/clinic.dat`), written so that a crash never leaves a half-written file.
 
 ### Security
 - One access policy (None / View / Full) used by every screen and button.
@@ -190,8 +190,8 @@ Settings at View level gives the personal appearance options only. Full adds sec
 | | Old | New |
 | --- | --- | --- |
 | Java version | Not set (CI used 11 and 17) | 17 (runs on 17+) |
-| Build | None (CI referenced missing `pom.xml` and `build.xml`) | Maven: `mvn exec:java`, `mvn package` → `ayaresa-4.0.0.jar` |
-| Package | `upsa.clinic` inside a folder named `Java Source Files (.java)` | `com.ayaresa` in the standard `src/main/java` layout |
+| Build | None (CI referenced missing `pom.xml` and `build.xml`) | Maven: `mvn exec:java`, `mvn package` → `medipulse-4.0.0.jar` |
+| Package | `upsa.clinic` inside a folder named `Java Source Files (.java)` | `com.medipulse` in the standard `src/main/java` layout |
 | Architecture | Each screen held its own hard-coded table data | Layers: `domain` (immutable records) → `clinical` (NEWS2, safety checks) → `store` (rules, events, saving) → `screens` / `shell` / `ui` |
 | Data flow | None between screens | The store publishes change events; screens subscribe and refresh only when visible |
 | Saving | None | Serialized snapshot written on a background thread with an atomic file replace. An unreadable file is set aside and demo data is loaded instead |
@@ -213,19 +213,19 @@ cd Clinic-demo            # or the folder you unzipped
 
 mvn exec:java                          # run from source
 mvn package                            # run the tests and build one runnable jar
-java -jar target/ayaresa-4.0.0.jar
+java -jar target/medipulse-4.0.0.jar
 ```
 
-In IntelliJ IDEA, Eclipse or NetBeans, open the folder as a **Maven project** and run `com.ayaresa.Main`.
+In IntelliJ IDEA, Eclipse or NetBeans, open the folder as a **Maven project** and run `com.medipulse.Main`.
 
-Data is saved to `~/.ayaresa/clinic.dat`. Delete that file, or use **Settings → Reset demo data**, to start fresh.
+Data is saved to `~/.medipulse/clinic.dat`. Delete that file, or use **Settings → Reset demo data**, to start fresh.
 
 ---
 
 ## 7. Project layout
 
 ```
-src/main/java/com/ayaresa/
+src/main/java/com/medipulse/
   Main.java, Brand.java, Preferences.java
   domain/      Patient, QueueEntry, VitalSigns, Appointment, Bed, Drug, Invoice, ... (immutable records)
   clinical/    News2 (early warning score), SafetyCheck (allergy / stock / expiry before dispensing)
@@ -236,10 +236,10 @@ src/main/java/com/ayaresa/
                Messages, Settings, PatientChart, Sheets (all forms)
   ui/          Theme (light/dark tokens), GlassPanel, Card, DataTable, Sheet, Drawer, Toast,
                Chips, BarChart, Icons, VerticalScroll, ...
-src/main/resources/com/ayaresa/fonts/   Tabler icon font (MIT licence)
-src/test/java/com/ayaresa/              Access policy, sign-in, NEWS2 and store tests
+src/main/resources/com/medipulse/fonts/   Tabler icon font (MIT licence)
+src/test/java/com/medipulse/              Access policy, sign-in, NEWS2 and store tests
 docs/screenshots/old/                   Screenshots of the original v2.0 app
-docs/screenshots/new/                   Screenshots of Ayaresa v4.0
+docs/screenshots/new/                   Screenshots of MediPulse v4.0
 ```
 
 The product name is set in one place: `Brand.java`.

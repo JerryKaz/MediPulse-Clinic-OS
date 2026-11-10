@@ -4,16 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ayaresa</groupId>
-    <artifactId>ayaresa</artifactId>
+    <groupId>com.medipulse</groupId>
+    <artifactId>medipulse</artifactId>
     <version>4.0.0</version>
-    <name>Ayaresa</name>
+    <name>MediPulse</name>
 
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <flatlaf.version>3.5.4</flatlaf.version>
-        <main.class>com.ayaresa.Main</main.class>
+        <main.class>com.medipulse.Main</main.class>
     </properties>
 
     <dependencies>
@@ -46,7 +46,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
             </plugin>
-            <!-- Builds a single runnable jar: java -jar target/ayaresa-4.0.0.jar -->
+            <!-- Builds a single runnable jar: java -jar target/medipulse-4.0.0.jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
