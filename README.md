@@ -1,374 +1,70 @@
-# UPSA Clinic Management System
+# Ayaresa — Clinic OS
 
-A modern desktop-based clinic management application built with Java Swing to improve healthcare operations and patient record management within the UPSA Clinic environment.
-
----
-
-##  Overview
-
-The **UPSA Clinic Management System** is a Java Swing application designed to streamline clinical workflows for students, staff, nurses, doctors, pharmacists, and administrators.
-
-The system provides an intuitive and modern interface for:
-
-* Patient registration
-* Medical file management
-* Vitals monitoring
-* Diagnoses and prescriptions
-* Pharmacy operations
-* Bed management
-* Billing and appointments
-* Role-based access control
-
-The project demonstrates how traditional Java Swing applications can be redesigned into visually appealing and modular healthcare systems suitable for real-world environments.
-
----
-## What's new in v3.0
-
-A redesign in the style of iOS 27 / macOS 27 (Liquid Glass), plus a rebuilt access-control layer.
+*Ayaresa* is Twi for "healing". It is a desktop clinic management system written in Java 17 and Swing, with an interface in the style of iOS 27 / macOS 27 (Liquid Glass). It is built for small clinics in Ghana: Ghana cedis, NHIS claims, Mobile Money and Ghana Card numbers are all supported.
 
 <p align="center">
-  <img width="90%" src="docs/screenshots/dashboard-admin.png" alt="Today dashboard, administrator" />
+  <img width="92%" src="docs/screenshots/01-today-admin.png" alt="Today dashboard" />
 </p>
 <p align="center">
-  <img width="45%" src="docs/screenshots/login.png" alt="Sign in" />
-  <img width="45%" src="docs/screenshots/dashboard-pharmacist.png" alt="Today dashboard, pharmacist" />
+  <img width="45%" src="docs/screenshots/02-queue.png" alt="Live patient queue" />
+  <img width="45%" src="docs/screenshots/03-patient-chart.png" alt="Patient chart" />
 </p>
-
-**Design**
-
-* A floating glass sidebar and toolbar. Glass is used only for navigation and controls; content stays on solid cards, so it stays readable.
-* Real vector icons (the bundled Tabler icon font) replace emoji, so they look the same on Windows, macOS and Linux.
-* The Inter font, Apple system colours, large page titles, and status pills that use the same colours everywhere.
-* Capsule toasts replace information popups. Dialogs are kept for confirmations only.
-* A new role-aware **Today** dashboard. Stats, cards and quick actions depend on what the signed-in role can do.
-* Keyboard shortcuts: `Ctrl+K` (`Cmd+K` on macOS) jumps to a screen, and `Ctrl+1`–`Ctrl+9` open sidebar items.
-
-**Access control**
-
-* One source of truth: `security/AccessPolicy`. Access is denied unless granted, and each screen is `NONE`, `VIEW` or `FULL` per role. The sidebar, navigation guard and dashboard all read from it.
-* Users only see the screens they can open. A screen a role can't open is never built.
-* Passwords are hashed with PBKDF2-HMAC-SHA256 (210,000 iterations, salted, constant-time check), and password buffers are wiped after use.
-* An account locks for 60 seconds after 5 failed sign-ins. Error messages never say whether the username or the password was wrong.
-* Users are signed out automatically after 15 minutes without activity.
-* Sign-ins, failures, lockouts, sign-outs and denied access are written to an audit log (`security/AuditLog`).
-
-| Screen | Admin | Doctor | Nurse | Pharmacist |
-| --- | --- | --- | --- | --- |
-| Today | Full | Full | Full | Full |
-| Patients | Full | Full | Full | View |
-| Appointments | Full | Full | Full | – |
-| Vitals | Full | Full | Full | – |
-| Beds | Full | View | Full | – |
-| Doctors | Full | View | View | – |
-| Pharmacy | Full | View | View | Full |
-| Billing | Full | – | – | – |
-| Messages | Full | Full | Full | Full |
-| Settings | Full | – | – | – |
-
-Demo accounts: `admin / 1234`, `doctor1 / 3333`, `nurse1 / 2222`, `pharm1 / 4444`.
-
-**Still to do:** the Patients, Appointments, Vitals, Beds, Doctors, Pharmacy, Billing, Messages and Settings screens run inside the new shell but keep their old styling. They get redesigned in phase 2.
-
----
-##  Screenshots
-
 <p align="center">
-  <img width="45%" src="https://github.com/user-attachments/assets/6b185133-c9fd-4116-bbeb-0813d644574c" />
-  <img width="45%" src="https://github.com/user-attachments/assets/149000a7-0e05-4c6f-95e2-66e2370ab566" />
+  <img width="45%" src="docs/screenshots/02-vitals.png" alt="Vitals with live NEWS2" />
+  <img width="45%" src="docs/screenshots/05-dispense-allergy.png" alt="Allergy check when dispensing" />
 </p>
-
 <p align="center">
-  <img width="45%" src="https://github.com/user-attachments/assets/7c47ede8-ee34-4581-97f0-81efed9a99bc" />
-  <img width="45%" src="https://github.com/user-attachments/assets/c5c9c8a3-b847-432c-8bc1-2ca4ea22080e" />
-</p>
-
-<p align="center">
-  <img width="45%" src="https://github.com/user-attachments/assets/7732d7b7-2bb6-43b2-8571-22f6d0da72ae" />
-  <img width="45%" src="https://github.com/user-attachments/assets/09461719-68fd-464c-b325-78cb030e0562" />
-</p>
-
-<p align="center">
-  <img width="45%" src="https://github.com/user-attachments/assets/11b4f32c-dbff-4ad4-81d4-a6516049bd23" />
-  <img width="45%" src="https://github.com/user-attachments/assets/de98d58a-78f5-45a2-80fb-21abaf570345" />
-</p>
-
-<p align="center">
-  <img width="45%" src="https://github.com/user-attachments/assets/f91c4b1f-1b66-4c0b-9b42-143600ffe82f" />
-  <img width="45%" src="https://github.com/user-attachments/assets/73cce2fb-2233-4ec4-86bf-ad5de26c103e" />
-</p>
-
-<p align="center">
-  <img width="45%" src="https://github.com/user-attachments/assets/b179e813-5ba0-4acc-b8f4-40809e8431c7" />
-  <img width="45%" src="https://github.com/user-attachments/assets/220b93d3-f971-4f7d-a2d8-4da2dd798fbf" />
-</p>
-
-<p align="center">
-  <img width="45%" src="https://github.com/user-attachments/assets/9c44f307-a2cd-4ece-9b85-d9bcdd31eb6b" />
-  <img width="45%" src="https://github.com/user-attachments/assets/68495346-1e6b-4966-828e-14c05a5b612e" />
+  <img width="45%" src="docs/screenshots/02-billing.png" alt="Billing with NHIS and Mobile Money" />
+  <img width="45%" src="docs/screenshots/20-dark-today-nurse.png" alt="Dark mode" />
 </p>
 
 ---
 
-##  Features
-
-###  Patient Management
-
-* Student and staff registration
-* Digital patient records
-* Medical history tracking
-* Blood group and genotype records
-* Contact and academic information storage
-
-### Vitals Monitoring
-
-* Blood pressure recording
-* Temperature tracking
-* Weight and pulse monitoring
-* Abnormal vitals warning system
-
-###  Doctor Module
-
-* Patient history review
-* Diagnosis recording
-* Prescription management
-* Clinical notes entry
-
-###  Pharmacy Module
-
-* Prescription verification
-* Medication dispensing confirmation
-* Medicine tracking
-
-### Bed Management
-
-* Bed allocation
-* Occupancy monitoring
-* Availability tracking
-
-###  Appointments & Billing
-
-* Appointment scheduling
-* Financial transaction recording
-* Operational summaries
-
-###  Role-Based Access
-
-* Patient access
-* Nurse dashboard
-* Doctor dashboard
-* Pharmacist dashboard
-* Admin dashboard
-
----
-
-##  Technologies Used
-
-* **Java**
-* **Java Swing**
-* **Java AWT**
-* **Java I/O**
-* **CardLayout**
-* **Object-Oriented Programming (OOP)**
-
----
-
-##  System Architecture
-
-The application follows a layered modular architecture:
-
-### Presentation Layer
-
-Handles all UI components using Java Swing:
-
-* Dashboard
-* Sidebar navigation
-* Header bar
-* Panels and forms
-
-### Logic Layer
-
-Processes:
-
-* Patient management
-* Vitals handling
-* Diagnosis workflows
-* Prescriptions
-* Appointments
-
-### Data Layer
-
-Uses Java I/O for:
-
-* Saving records
-* Loading files
-* Updating patient information
-
-Future support:
-
-* SQLite
-* MySQL
-* JSON storage
-
----
-
-##  Main Modules
-
-| Module        | Description                                 |
-| ------------- | ------------------------------------------- |
-| DashboardView | Main application container using CardLayout |
-| HeaderBar     | Search, logout, and user controls           |
-| SidebarMenu   | Navigation between modules                  |
-| PatientPanel  | Patient registration and management         |
-| VitalsPanel   | Nurse vitals entry system                   |
-| DoctorPanel   | Diagnosis and prescriptions                 |
-| PharmacyPanel | Medication confirmation                     |
-| AdminPanel    | Administrative controls                     |
-
----
-
-##  System Flow
-
-### Login Process
-
-1. User opens application
-2. Login page appears
-3. User role is verified
-4. Dashboard loads based on role
-
-### Patient Workflow
-
-* Register/Login
-* Submit personal information
-* Medical file created
-* Data stored using student index number or staff ID
-
-### Nurse Workflow
-
-* View patient queue
-* Record vitals
-* Update patient status
-
-### Doctor Workflow
-
-* Access patient records
-* Review medical history
-* Enter diagnosis
-* Prescribe medication
-
-### Pharmacist Workflow
-
-* View prescriptions
-* Dispense medication
-* Confirm treatment completion
-
----
-
-##  Class Structure
-
-### Core Classes
-
-#### `MainApp`
-
-* Starts the application
-* Loads login and dashboard views
-
-#### `User`
-
-Superclass for:
-
-* Patient
-* Nurse
-* Doctor
-* Pharmacist
-* Admin
-
-#### `Patient`
-
-Stores:
-
-* Index number
-* Programme
-* Medical history
-* Blood group
-* Genotype
-
-#### `Vitals`
-
-Handles:
-
-* Temperature
-* Blood pressure
-* Pulse
-* Weight
-
-#### `Diagnosis`
-
-Stores:
-
-* Medical condition
-* Notes
-* Prescriptions
-
-#### `Prescription`
-
-Manages:
-
-* Drug names
-* Dosage
-* Dispensing confirmation
-
-#### `FileManager`
-
-Handles Java I/O operations:
-
-* Save records
-* Load records
-* Update files
-
----
-
-##  UI Design Highlights
-
-* Modern dashboard layout
-* Rounded buttons and cards
-* Unified colour palette
-* Sidebar navigation
-* Clean spacing and typography
-* Hover effects and interactive controls
-
----
-
-##  Design Goals
-
-### Usability
-
-Designed for fast and intuitive clinical operations.
-
-### Consistency
-
-Unified styling across all panels and modules.
-
-### Scalability
-
-Modular structure allows easy future expansion.
-
----
-
-##  Future Improvements
-
-* Database integration (MySQL / SQLite)
-* Authentication encryption
-* PDF report generation
-* Analytics dashboard
-* Printing support
-* Electronic Health Records (EHR)
-* Notifications and messaging
-* Cloud backup
-
-
----
-
-##  Installation
+## Features
+
+The feature set is based on what current clinic and EMR systems offer: real-time queue management with triage priority, early-warning scoring, local billing (NHIS, Mobile Money), pharmacy expiry and reorder alerts, and a complete audit log.
+
+| Area | What it does |
+| --- | --- |
+| **Today** | A live dashboard for each role: patients in the clinic, a 14-day visit trend, NEWS2 alerts, bed occupancy, stock alerts, money collected, upcoming appointments and quick actions. |
+| **Queue** | A patient flow board (Waiting → Triage → Doctor → Pharmacy → Billing). Patients are ordered by triage priority (Emergency, Urgent, Routine), then by waiting time. Each patient gets a token number. Waiting times turn amber after 30 minutes and red after 60. |
+| **Patients** | Search by name, ID, phone, Ghana Card or NHIS number. Filter by NHIS status, allergies, admitted or in the clinic today. Export to CSV, with spreadsheet formula injection blocked. |
+| **Patient chart** | Allergy and NHIS banners, latest observations, and one timeline of visits, vitals, medicines, appointments and bills. |
+| **Vitals** | Automatic **NEWS2** scoring (Royal College of Physicians, SpO₂ scale 1). The score and each parameter's contribution update live while you type. A medium or high score automatically raises the patient's queue priority. |
+| **Appointments** | A day view per clinician. Double bookings are blocked. Checking in an appointment adds the patient to the queue. |
+| **Beds** | A ward map coloured by each patient's latest NEWS2 risk. Admit and discharge from the map. |
+| **Pharmacy** | Stock with reorder levels, expiry tracking (expired items blocked, warning within 90 days) and NHIS cover. Dispensing checks **allergies**, stock and expiry first. Allergy warnings can only be overridden with a confirmation, and the override is recorded. Dispensed medicines are added to the patient's bill automatically. |
+| **Billing** | Ghana cedis (using BigDecimal, never floating point). Payment by cash, **Mobile Money** (transaction ID required), card or waiver. **NHIS claims** are only accepted if membership was active on the day of service. Claims can be marked paid or rejected. |
+| **Messages** | Team channels (Ward A, Pharmacy, Front desk). |
+| **Settings** | Light and dark mode, a **Liquid Glass intensity slider** (like iOS 27), the inactivity sign-out time, an audit log viewer and a demo data reset. |
+| **Everywhere** | **Ctrl+K / ⌘K** opens a command palette to search patients, screens and actions. Toasts replace popups. Sidebar badges and toolbar alerts update live. Data is saved between runs. |
+
+## Access control
+
+Who can do what is defined in a single file, `security/AccessPolicy`. Anything not granted is denied. Each screen is `NONE`, `VIEW` or `FULL` for each role. The sidebar, navigation, command palette and every action button read from that one policy. A screen a role can't open is never built.
+
+| Screen | Admin | Doctor | Nurse | Pharmacist | Receptionist |
+| --- | --- | --- | --- | --- | --- |
+| Today | Full | Full | Full | Full | Full |
+| Queue | Full | Full | Full | View | Full |
+| Patients | Full | Full | Full | View | Full |
+| Appointments | Full | Full | Full | – | Full |
+| Vitals | Full | Full | Full | – | – |
+| Beds | Full | View | Full | – | – |
+| Staff | Full | View | View | – | View |
+| Pharmacy | Full | View | View | Full | – |
+| Billing | Full | – | – | – | Full |
+| Messages | Full | Full | Full | Full | Full |
+| Settings | Full | View | View | View | View |
+
+- Passwords are hashed with PBKDF2-HMAC-SHA256 (210,000 iterations, salted, constant-time check), and password buffers are wiped after use.
+- An account locks for 60 seconds after 5 failed sign-ins. Error messages never say whether the username or the password was wrong.
+- Users are signed out automatically after a period of inactivity (15 minutes by default).
+- The audit log records sign-ins, lockouts, denied access and every change to patient data, and it is saved with the data.
+
+Demo accounts: `admin / 1234`, `doctor1 / 3333`, `nurse1 / 2222`, `pharm1 / 4444`, `front1 / 5555`.
+
+## Run it
 
 Requires **Java 17+** and **Maven 3.9+**.
 
@@ -376,36 +72,37 @@ Requires **Java 17+** and **Maven 3.9+**.
 git clone https://github.com/JerryKaz/Clinic-demo.git
 cd Clinic-demo
 
-mvn exec:java                         # run from source
-mvn package                           # run the tests and build a single runnable jar
-java -jar target/clinic-3.0.0.jar
+mvn exec:java                          # run from source
+mvn package                            # run the tests and build one runnable jar
+java -jar target/ayaresa-4.0.0.jar
 ```
 
-In IntelliJ IDEA, NetBeans or Eclipse, open the folder as a **Maven project** and run `upsa.clinic.Main`.
+Data is saved to `~/.ayaresa/clinic.dat`. Delete that file, or use **Settings → Reset demo data**, to start fresh.
 
-### Project layout
+## Project layout
 
 ```
-src/main/java/upsa/clinic/
-  Main.java          entry point
-  security/          Role, Screen, AccessLevel, AccessPolicy, AuthService, PasswordHasher, AuditLog
-  shell/             MainWindow, LoginWindow, Sidebar, Toolbar, IdleLock
-  ui/                Theme tokens and components (GlassPanel, Card, PillButton, Toast, Icons, ...)
-  data/              ClinicData (sample data; swap for a database later)
-  panels/            DashboardPanel (new) and the existing feature screens
-src/main/resources/upsa/clinic/fonts/   Tabler icon font (MIT)
+src/main/java/com/ayaresa/
+  Main.java, Brand.java, Preferences.java
+  domain/      Patient, QueueEntry, VitalSigns, Appointment, Bed, Drug, Invoice, ... (immutable records)
+  clinical/    News2 (early warning score), SafetyCheck (allergy / stock / expiry before dispensing)
+  store/       ClinicStore (validation, change events, audit, atomic save), SeedData
+  security/    Role, Screen, AccessLevel, AccessPolicy, AuthService, PasswordHasher, AuditLog
+  shell/       MainWindow, LoginWindow, Sidebar, Toolbar, CommandPalette, IdleLock
+  screens/     Today, Queue, Patients, Appointments, Vitals, Beds, Staff, Pharmacy, Billing, Messages, Settings,
+               PatientChart, Sheets (all forms)
+  ui/          Theme (light/dark tokens), GlassPanel, Card, DataTable, Sheet, Drawer, Toast, Chips, BarChart, Icons, ...
+src/main/resources/com/ayaresa/fonts/   Tabler icon font (MIT)
+src/test/java/                         AccessPolicy, AuthService, NEWS2 and ClinicStore tests
 ```
 
----
+The product name lives in one place: `Brand.java`.
 
-##  References
+## Notes
 
-* Oracle Java Documentation
-  [Oracle Java Documentation](https://docs.oracle.com/javase/?utm_source=chatgpt.com)
+- NEWS2 is a screening aid and doesn't replace clinical judgement. SpO₂ scale 2 isn't offered, because it should only be used under clinician direction.
+- Storage is a single local file (Java serialization), which suits a single-PC clinic. For several users at once, swap `ClinicStore`'s save and load for PostgreSQL. The screens don't need to change.
 
-* Gamma, E., Helm, R., Johnson, R., & Vlissides, J. (1995).
-  *Design Patterns: Elements of Reusable Object-Oriented Software.*
+## License
 
-* Nielsen, J. (1994).
-  *Usability Engineering.*
-
+MIT © Jerry Myron
