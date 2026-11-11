@@ -41,6 +41,7 @@ final class Toolbar extends GlassPanel {
     private final JLabel crumb = new JLabel();
     private final BellButton bell = new BellButton();
     private final JPanel actionSlot = new JPanel(new BorderLayout());
+    private final SearchLauncher launcher = new SearchLauncher();
     private List<Alert> alerts = List.of();
 
     Toolbar(Runnable openPalette) {
@@ -54,7 +55,6 @@ final class Toolbar extends GlassPanel {
 
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         right.setOpaque(false);
-        SearchLauncher launcher = new SearchLauncher();
         launcher.addActionListener(e -> openPalette.run());
         right.add(launcher);
         bell.addActionListener(e -> showAlerts());
@@ -62,6 +62,20 @@ final class Toolbar extends GlassPanel {
         actionSlot.setOpaque(false);
         right.add(actionSlot);
         add(right, BorderLayout.EAST);
+    }
+
+    // Parts the guided tour points at.
+    java.awt.Component searchLauncher() {
+        return launcher;
+    }
+
+    java.awt.Component bell() {
+        return bell;
+    }
+
+    /** The current primary-action button, or null if this screen has none. */
+    PillButton primaryButton() {
+        return actionSlot.getComponentCount() == 0 ? null : (PillButton) actionSlot.getComponent(0);
     }
 
     void setCrumb(String title) {

@@ -100,7 +100,8 @@ The old screenshots were taken by running the original v2.0 code from this repos
 | **Brute-force protection** | None | 60-second lockout after 5 failed attempts |
 | **Session security** | None | Automatic sign-out after inactivity (15 minutes by default) |
 | **Audit trail** | None | Records sign-ins, failures, lockouts, denied access and every data change, with who and when. Kept between runs |
-| **Keyboard** | None | Ctrl+K, Ctrl+N (new patient), Ctrl+1–9 (screens), Enter to submit, Esc to close |
+| **Keyboard** | None | Ctrl+K, Ctrl+N (new patient), Ctrl+1–9 (screens), F1 (guided tour), Enter to submit, Esc to close |
+| **Onboarding** | None | A guided tour on first sign-in, tailored to each role, and replayable at any time |
 | **Accessibility** | Emoji icons with no labels | Screen-reader names on icon buttons, the chart, the segmented control and avatars |
 | **Build** | No build file (both CI workflows failed). Compiled `.class` files committed | Maven with tests and a single runnable jar. One working CI workflow |
 | **Tests** | None | 32 unit tests (access policy, sign-in, NEWS2, clinical and billing rules) |
@@ -136,6 +137,7 @@ The old screenshots were taken by running the original v2.0 code from this repos
 - Filters: low stock, expiring, expired, NHIS covered.
 
 ### Everyday use
+- **Guided tour** for new users. It starts on each user's first sign-in and highlights the sidebar, search, alerts, the main action and the screens that role can use. A pharmacist sees 10 steps and an admin sees 12. Use → / Enter for next, ← for back and Esc to skip. Replay it with **F1**, **Ctrl+K → Take the tour** or **Settings → Help**.
 - **Command palette (Ctrl+K / ⌘K)** to find patients, jump to screens and run actions.
 - **Patient chart** side panel with a complete timeline.
 - **Live updates**: change something on one screen and every other screen, badge and alert updates straight away.

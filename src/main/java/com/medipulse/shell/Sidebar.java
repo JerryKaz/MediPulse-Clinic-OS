@@ -67,6 +67,11 @@ final class Sidebar extends GlassPanel {
         add(userChip(user, onSignOut), BorderLayout.SOUTH);
     }
 
+    /** The row for a screen, for the guided tour to highlight; null if the role can't see it. */
+    java.awt.Component itemFor(Screen screen) {
+        return items.get(screen);
+    }
+
     /** Shows a count bubble next to a screen (e.g. patients waiting); 0 hides it. */
     void setBadge(Screen screen, int count, boolean alert) {
         Item item = items.get(screen);

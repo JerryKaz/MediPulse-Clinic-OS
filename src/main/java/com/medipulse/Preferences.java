@@ -27,6 +27,15 @@ public final class Preferences {
         P.putFloat("glassOpacity", value);
     }
 
+    /** Whether this user has seen (or skipped) the guided tour on this computer. */
+    public static boolean tourSeen(String username) {
+        return P.getBoolean("tourSeen." + username, false);
+    }
+
+    public static void setTourSeen(String username) {
+        P.putBoolean("tourSeen." + username, true);
+    }
+
     public static Duration idleTimeout() {
         return Duration.ofMinutes(P.getInt("idleMinutes", 15));
     }

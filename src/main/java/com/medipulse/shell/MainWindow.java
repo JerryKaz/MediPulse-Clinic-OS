@@ -31,6 +31,7 @@ import com.medipulse.store.ClinicStore;
 import com.medipulse.ui.Backdrop;
 import com.medipulse.ui.GlassPanel;
 import com.medipulse.ui.Icons;
+import com.medipulse.ui.PillButton;
 import com.medipulse.ui.Sheet;
 import com.medipulse.ui.TablerIcon;
 import com.medipulse.ui.Theme;
@@ -126,7 +127,79 @@ public final class MainWindow extends JFrame implements AppContext {
         super.setVisible(visible);
         if (visible) {
             idleLock.start();
+            if (!Preferences.tourSeen(user.username())) {
+                // First sign-in for this user on this computer: show the tour once the window is painted.
+                javax.swing.SwingUtilities.invokeLater(this::startTour);
+            }
         }
+    }
+
+    // ---- Guided tour -----------------------------------------------------------------
+
+    @Override
+    public void startTour() {
+        open(Screen.DASHBOARD);
+        Tour.start(this, tourSteps(), () -> {
+            Preferences.setTourSeen(user.username());
+            open(Screen.DASHBOARD);
+        });
+    }
+
+    /** Steps for this user's role: only screens they can actually open are included. */
+    private List<Tour.Step> tourSteps() {
+        List<Tour.Step> s = new ArrayList<>();
+        String role = user.role().label().toLowerCase();
+        String article = "aeiou".indexOf(role.charAt(0)) >= 0 ? "an " : "a ";
+        s.add(Tour.Step.centred(TablerIcon.HEARTBEAT, "Welcome to " + Brand.NAME + ", " + user.firstName(),
+                "Here's a one-minute tour of what you can do as " + article + role + ". "
+                        + "Use <b>Next</b> or the arrow keys, or skip it and come back later from Settings."));
+        s.add(new Tour.Step(() -> sidebar, TablerIcon.LAYOUT_DASHBOARD, "Your screens",
+                "Everything your role can open is listed here, and nothing else. Badges show live counts, "
+                        + "like patients waiting or stock alerts. <b>Ctrl+1</b> to <b>Ctrl+9</b> jump straight to them.", null));
+        s.add(new Tour.Step(toolbar::searchLauncher, TablerIcon.SEARCH, "Find anything",
+                "Press <b>Ctrl+K</b> to search patients by name, ID, phone, Ghana Card or NHIS number, "
+                        + "jump to any screen, or start an action such as checking a patient in.", null));
+        s.add(new Tour.Step(toolbar::bell, TablerIcon.BELL, "Alerts that matter",
+                "High NEWS2 scores, emergencies in the queue, expired or low stock and rejected NHIS claims "
+                        + "show up here. Click an alert to go straight to it.", null));
+        PillButton main = toolbar.primaryButton();
+        if (main != null) {
+            s.add(new Tour.Step(toolbar::primaryButton, TablerIcon.PLUS, "Your main action",
+                    "Each screen has one blue button for the thing you do most. On Today it's <b>" + main.getText() + "</b>.", null));
+        }
+        s.add(new Tour.Step(() -> content, TablerIcon.LAYOUT_DASHBOARD, "Today at a glance",
+                "Live numbers for your role. Click a tile to open that screen. <b>Needs attention</b> lists "
+                        + "the patients and problems to deal with first.", () -> open(Screen.DASHBOARD)));
+        if (user.canView(Screen.QUEUE)) {
+            s.add(new Tour.Step(() -> content, TablerIcon.USERS_GROUP, "The patient queue",
+                    "Patients move left to right through their visit. Emergencies and urgent cases come first, "
+                            + "and waiting times turn amber after 30 minutes and red after an hour. "
+                            + "The blue button on a card moves the patient on.", () -> open(Screen.QUEUE)));
+        }
+        if (user.canView(Screen.VITALS)) {
+            s.add(new Tour.Step(() -> content, TablerIcon.ACTIVITY_HEARTBEAT, "Vitals and NEWS2",
+                    "Enter observations and the NEWS2 early warning score updates as you type. "
+                            + "A medium or high score moves the patient up the queue automatically.", () -> open(Screen.VITALS)));
+        }
+        if (user.canView(Screen.PATIENTS)) {
+            s.add(new Tour.Step(() -> content, TablerIcon.USERS, "Patient records",
+                    "Search and filter patients. Double-click a patient to open their chart: allergies, "
+                            + "NHIS status, latest vitals and a full timeline.", () -> open(Screen.PATIENTS)));
+        }
+        if (user.canView(Screen.PHARMACY)) {
+            s.add(new Tour.Step(() -> content, TablerIcon.PILL, "Safe dispensing",
+                    "Every dispense is checked against the patient's allergies, the stock level and the expiry date. "
+                            + "Expired batches can't be given out.", () -> open(Screen.PHARMACY)));
+        }
+        if (user.canView(Screen.BILLING)) {
+            s.add(new Tour.Step(() -> content, TablerIcon.CASH, "Billing",
+                    "Take cash, Mobile Money or card payments and submit NHIS claims. A claim is only accepted "
+                            + "if the patient's membership was active on the day of the visit.", () -> open(Screen.BILLING)));
+        }
+        s.add(new Tour.Step(() -> sidebar.itemFor(Screen.SETTINGS), TablerIcon.SETTINGS, "Make it yours",
+                "Switch to dark mode or adjust the glass in Settings. You can take this tour again any time "
+                        + "from Settings, from <b>Ctrl+K</b>, or by pressing <b>F1</b>.", () -> open(Screen.DASHBOARD)));
+        return s;
     }
 
     // ---- AppContext ------------------------------------------------------------------
@@ -266,6 +339,8 @@ public final class MainWindow extends JFrame implements AppContext {
                         Screen.APPOINTMENTS, () -> Sheets.book(this, null)),
                 new CommandPalette.Action("Dispense medicine", "pharmacy drug", TablerIcon.PILL,
                         Screen.PHARMACY, () -> Sheets.dispense(this, null, null)),
+                new CommandPalette.Action("Take the tour", "help guide tutorial onboarding how", TablerIcon.INFO_CIRCLE,
+                        Screen.DASHBOARD, this::startTour),
                 new CommandPalette.Action(Theme.isDark() ? "Switch to light mode" : "Switch to dark mode",
                         "theme appearance dark light", Theme.isDark() ? TablerIcon.SUN : TablerIcon.MOON,
                         Screen.DASHBOARD, this::toggleDarkMode));
@@ -283,6 +358,7 @@ public final class MainWindow extends JFrame implements AppContext {
         JComponent root = getRootPane();
         int menu = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx(); // Ctrl, or Cmd on macOS
         bind(root, KeyStroke.getKeyStroke(KeyEvent.VK_K, menu), "palette", this::openPalette);
+        bind(root, KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0), "tour", this::startTour);
         bind(root, KeyStroke.getKeyStroke(KeyEvent.VK_N, menu), "new-patient", () -> {
             if (user.canEdit(Screen.PATIENTS)) {
                 Sheets.newPatient(this);

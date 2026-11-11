@@ -43,6 +43,9 @@ public interface AppContext {
         return user().canEdit(s);
     }
 
+    /** Starts the guided tour for the signed-in user. */
+    void startTour();
+
     /** Rebuilds the window, e.g. after switching between light and dark mode. */
     void rebuild();
 }

@@ -54,6 +54,10 @@ public final class SettingsScreen extends ScreenView {
         cols.setOpaque(false);
         JPanel left = vertical();
         left.add(card("Appearance", appearance()));
+        left.add(gap(Theme.GAP));
+        left.add(card("Help", Fields.stack(
+                secondary("<html>A one-minute guided tour of the screens you can use. Also on F1 and Ctrl+K.</html>"),
+                secondaryButton("Take the tour", TablerIcon.INFO_CIRCLE, app::startTour))));
         if (admin) {
             left.add(gap(Theme.GAP));
             left.add(card("Security", security()));
